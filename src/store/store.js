@@ -1,6 +1,13 @@
-import { legacy_createStore as createStore } from "redux";
-
+import { applyMiddleware, legacy_createStore as createStore } from "redux";
 const initialState = { listem: [] };
+
+const myLogger = (store) => (next) => (action) => {
+  console.log("[Middleware] Şimdiki state:", store.getState());
+  console.log("[Middleware] Şu aksiyon dispatch edilecek:", action);
+  const result = next(action);
+  console.log("[Middleware] Sonraki state:", store.getState());
+  return result;
+};
 
 export function reducer(state = initialState, action) {
   switch (action.type) {
@@ -16,4 +23,4 @@ export function reducer(state = initialState, action) {
   }
 }
 
-export const store = createStore(reducer);
+export const store = createStore(reducer, applyMiddleware(myLogger));
